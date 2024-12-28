@@ -2,7 +2,7 @@ import { Counter } from "./features/counter/Counter";
 import "./App.css";
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
+import SignUpPage from "./pages/SignUpPage";
 
 import {
   createBrowserRouter,
@@ -19,12 +19,12 @@ const router = createBrowserRouter([
     element: <Home></Home>,
   },
   {
-    path: "/login",
+    path: "/Login",
     element: <LoginPage></LoginPage>,
   },
   {
-    path: "/signup",
-    element: <SignupPage></SignupPage>,
+    path: "/SignUp",
+    element: <SignUpPage></SignUpPage>,
   },
   {
     // only for testing - then page will be added
