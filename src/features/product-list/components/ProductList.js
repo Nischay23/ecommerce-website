@@ -127,7 +127,7 @@ function ProductList() {
   };
 
   const handleSort = (e, option) => {
-    const newFilter = { ...filter, _sort: option.sort, _order: option.order };
+    const newFilter = { ...filter, _sort: option.sort, _order: option.price };
     setFilter(newFilter);
     dispatch(fetchProductsByFiltersAsync(newFilter));
   };
@@ -422,9 +422,12 @@ function ProductList() {
                                   <a href={product.thumbnail}>
                                     <span
                                       aria-hidden="true"
-                                      className="absolute inset-0"
+                                      className="text-base font-medium text-gray-900 truncate"
                                     />
-                                    {product.title}
+                                    {product.title
+                                      .split(" ")
+                                      .slice(0, 2)
+                                      .join(" ")}
                                   </a>
                                 </h3>
                                 <p className="mt-1 text-sm text-gray-500 flex items-center">
