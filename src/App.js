@@ -2,6 +2,10 @@ import "./App.css";
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import PageNotFound from "./pages/404";
+import OrderSuccessPage from "./pages/orderSuccessPage";
+import UserOrders from "./features/user/components/UserOrders";
+import UserOrdersPage from "./pages/userOrderPage";
 
 import {
   createBrowserRouter,
@@ -45,6 +49,7 @@ const router = createBrowserRouter([
       </Protected>
     ),
   },
+
   {
     path: "/Checkout",
     element: (
@@ -60,6 +65,21 @@ const router = createBrowserRouter([
         <ProductDetailPage></ProductDetailPage>
       </Protected>
     ),
+  },
+  {
+    path: "/order-success/:id",
+    element: <OrderSuccessPage></OrderSuccessPage>,
+  },
+  {
+    path: "/orders",
+    element: (
+      <UserOrdersPage></UserOrdersPage>
+      // we will add Page later right now using component directly.
+    ),
+  },
+  {
+    path: "*",
+    element: <PageNotFound></PageNotFound>,
   },
 ]);
 
