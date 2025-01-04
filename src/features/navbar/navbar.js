@@ -22,15 +22,7 @@ const navigation = [
 const userNavigation = [
   { name: "My Profile", link: "/profile" },
   { name: "My Orders", link: "/orders" },
-  {
-    name: "Sign out",
-    onClick: () => {
-      // Clear session or authentication data
-      console.log("Logging out...");
-      // Redirect to SignUp or Login page
-      window.location.href = "/login";
-    },
-  },
+  { name: "Sign out", link: "/logout" },
 ];
 
 function classNames(...classes) {
