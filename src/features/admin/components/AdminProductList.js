@@ -1,14 +1,14 @@
 import React, { useState, Fragment, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  fetchProductsByFiltersAsync,
-  selectAllProducts,
-  selectTotalItems,
   fetchBrandsAsync,
   fetchCategoriesAsync,
+  fetchProductsByFiltersAsync,
+  selectAllProducts,
   selectBrands,
   selectCategories,
-} from "../productSlice";
+  selectTotalItems,
+} from "../../product-list/productSlice";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
@@ -31,22 +31,17 @@ const sortOptions = [
   { name: "Price: Low to High", sort: "price", order: "asc", current: false },
   { name: "Price: High to Low", sort: "price", order: "desc", current: false },
 ];
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-function ProductList() {
+export default function AdminProductList() {
   const dispatch = useDispatch();
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [sort, setSort] = useState({});
   const products = useSelector(selectAllProducts);
-  const [filter, setFilter] = useState({});
-  const totalItems = useSelector(selectTotalItems);
-  const [page, setPage] = useState(1);
-
   const brands = useSelector(selectBrands);
   const categories = useSelector(selectCategories);
-
+  const totalItems = useSelector(selectTotalItems);
   const filters = [
     {
       id: "category",
@@ -60,7 +55,12 @@ function ProductList() {
     },
   ];
 
+  const [filter, setFilter] = useState({});
+  const [sort, setSort] = useState({});
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [page, setPage] = useState(1);
   const handleFilter = (e, section, option) => {
+    console.log(e.target.checked);
     const newFilter = { ...filter };
     // TODO : on server it will support multiple categories
     if (e.target.checked) {
@@ -81,8 +81,8 @@ function ProductList() {
   };
 
   const handleSort = (e, option) => {
-    const sort = { _sort: option.sort };
-
+    const sort = { _sort: option.sort, _order: option.order };
+    console.log({ sort });
     setSort(sort);
   };
 
@@ -92,7 +92,7 @@ function ProductList() {
   };
 
   useEffect(() => {
-    const pagination = { _page: page, _per_page: ITEMS_PER_PAGE };
+    const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
     dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination }));
   }, [dispatch, filter, sort, page]);
 
@@ -110,8 +110,8 @@ function ProductList() {
       <div>
         <MobileFilter
           handleFilter={handleFilter}
-          setMobileFiltersOpen={setMobileFiltersOpen}
           mobileFiltersOpen={mobileFiltersOpen}
+          setMobileFiltersOpen={setMobileFiltersOpen}
           filters={filters}
         ></MobileFilter>
 
@@ -191,15 +191,21 @@ function ProductList() {
             </h2>
 
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-              {/* Filters */}
               <DesktopFilter
                 handleFilter={handleFilter}
                 filters={filters}
               ></DesktopFilter>
-
               {/* Product grid */}
+
               <div className="lg:col-span-3">
-                {/* This is our products list */}
+                <div>
+                  <Link
+                    to="/admin/product-form"
+                    className="rounded-md mx-10 my-5 bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    Add New Product
+                  </Link>
+                </div>
                 <ProductGrid products={products}></ProductGrid>
               </div>
               {/* Product grid end */}
@@ -394,71 +400,6 @@ function DesktopFilter({ handleFilter, filters }) {
   );
 }
 
-function ProductGrid({ products }) {
-  const productArray = Array.isArray(products?.data) ? products.data : [];
-
-  if (!productArray.length) {
-    return <p>No products available.</p>;
-  }
-
-  return (
-    <div className="bg-white">
-      <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-          {productArray.map((product) => (
-            <Link to={`product-detail/${product.id}`} key={product.id}>
-              <div className="group relative border-2 border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-lg hover:border-gray-400 transition duration-300 ease-in-out bg-white">
-                {product.discountPercentage > 0 && (
-                  <div
-                    className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full"
-                    style={{ zIndex: 10 }}
-                  >
-                    -{Math.round(product.discountPercentage)}%
-                  </div>
-                )}
-                <div className="min-h-80 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-90 lg:h-80">
-                  <img
-                    src={product.thumbnail}
-                    alt={product.title}
-                    className="h-full w-full object-cover object-center lg:h-full lg:w-full transform transition-transform duration-300 group-hover:scale-105"
-                  />
-                </div>
-                <div className="mt-4 flex justify-between">
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-900 truncate">
-                      <a href={product.thumbnail}>
-                        {product.title.split(" ").slice(0, 2).join(" ")}
-                      </a>
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-500 flex items-center">
-                      <StarIcon className="w-5 h-5 text-yellow-500" />
-                      <span className="ml-1">{product.rating}</span>
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">
-                      $
-                      {Math.round(
-                        product.price * (1 - product.discountPercentage / 100)
-                      )}
-                    </p>
-                    <p className="text-sm line-through font-medium text-gray-400">
-                      ${product.price}
-                    </p>
-                  </div>
-                </div>
-                {product.deleted && (
-                  <p className="text-sm text-red-400">Product deleted</p>
-                )}
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function Pagination({ page, setPage, handlePage, totalItems }) {
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
   return (
@@ -535,4 +476,68 @@ function Pagination({ page, setPage, handlePage, totalItems }) {
   );
 }
 
-export default ProductList;
+function ProductGrid({ products }) {
+  const productArray = Array.isArray(products) ? products : [];
+
+  return (
+    <div className="bg-white">
+      <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
+        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+          {productArray.map((product) => (
+            <div key={product.id}>
+              {/* Product Card */}
+              <Link to={`/product-detail/${product.id}`}>
+                <div className="group relative border-2 border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-lg hover:border-gray-400 transition duration-300 ease-in-out bg-white">
+                  {/* Product Image */}
+                  <div className="min-h-60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-90 lg:h-60">
+                    <img
+                      src={product.thumbnail}
+                      alt={product.title}
+                      className="h-full w-full object-cover object-center lg:h-full lg:w-full transform transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                  {/* Product Details */}
+                  <div className="mt-4 flex justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-900 truncate">
+                        {product.title}
+                      </h3>
+                      <p className="mt-1 text-sm text-gray-500 flex items-center">
+                        <StarIcon className="w-5 h-5 text-yellow-500" />
+                        <span className="ml-1">{product.rating}</span>
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-gray-900">
+                        $
+                        {Math.round(
+                          product.price * (1 - product.discountPercentage / 100)
+                        )}
+                      </p>
+                      <p className="text-sm line-through font-medium text-gray-400">
+                        ${product.price}
+                      </p>
+                    </div>
+                  </div>
+                  {/* Deleted Status */}
+                  {product.deleted && (
+                    <p className="mt-2 text-sm text-red-400">Product deleted</p>
+                  )}
+                </div>
+              </Link>
+              {/* Admin Edit Button */}
+              <div className="mt-5 text-center">
+                <Link
+                  to={`/admin/product-form/edit/${product.id}`}
+                  className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Edit Product
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
