@@ -14,6 +14,7 @@ const navigation = [
   { name: "Dashboard", link: "#", user: true },
   { name: "Team", link: "#", user: true },
   { name: "Admin", link: "/admin", admin: true },
+  { name: "Orders", link: "/admin/orders", admin: true },
 ];
 const userNavigation = [
   { name: "My Profile", link: "/profile" },
@@ -49,7 +50,7 @@ function NavBar({ children }) {
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
                         {navigation.map((item) =>
-                          item[user.role] ? (
+                          item[user?.role] ? ( // Use optional chaining here
                             <Link
                               key={item.name}
                               to={item.link}
@@ -94,7 +95,7 @@ function NavBar({ children }) {
                             <span className="sr-only">Open user menu</span>
                             <img
                               className="h-8 w-8 rounded-full"
-                              src={user.imageUrl}
+                              src={user?.imageUrl}
                               alt=""
                             />
                           </Menu.Button>
@@ -173,16 +174,16 @@ function NavBar({ children }) {
                     <div className="flex-shrink-0">
                       <img
                         className="h-10 w-10 rounded-full"
-                        src={user.imageUrl}
+                        src={user?.imageUrl}
                         alt=""
                       />
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium leading-none text-white">
-                        {user.name}
+                        {user?.name}
                       </div>
                       <div className="text-sm font-medium leading-none text-gray-400">
-                        {user.email}
+                        {user?.email}
                       </div>
                     </div>
                     <Link to="/cart">
