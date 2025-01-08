@@ -520,6 +520,11 @@ function ProductGrid({ products }) {
                   {product.deleted && (
                     <p className="mt-2 text-sm text-red-400">Product deleted</p>
                   )}
+                  {product.stock <= 0 && (
+                    <div>
+                      <p className="text-sm text-red-400">out of stock</p>
+                    </div>
+                  )}
                 </div>
               </Link>
               {/* Admin Edit Button */}

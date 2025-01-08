@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
+import React from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductByIdAsync, selectProductById } from "../productSlice";
+import {
+  fetchProductByIdAsync,
+  selectProductById,
+  selectProductListStatus,
+} from "../productSlice";
 import { Link, useParams } from "react-router-dom";
-import { addToCartAsync } from "../../cart/cartSlice";
+import { addToCartAsync, selectItems } from "../../cart/cartSlice";
 import { selectLoggedInUser } from "../../auth/authSlice";
 import { discountedPrice } from "../../../app/constants";
+
 // TODO: In server data we will add colors, sizes , highlights. to each product
 
 const colors = [
@@ -45,6 +51,9 @@ export default function ProductDetail() {
   const dispatch = useDispatch();
   const params = useParams();
   const user = useSelector(selectLoggedInUser);
+  const cart = useSelector((state) => state.cart);
+
+  const [popupMessage, setPopupMessage] = useState(""); // State for popup message
 
   useEffect(() => {
     dispatch(fetchProductByIdAsync(params.id));
@@ -52,9 +61,24 @@ export default function ProductDetail() {
 
   const handleCart = (e) => {
     e.preventDefault();
-    const newItem = { ...product, quantity: 1, user: user.id };
-    delete newItem["id"];
-    dispatch(addToCartAsync(newItem));
+
+    // Check if cart is valid and an array
+    const cartItems = Array.isArray(cart) ? cart : cart?.items || [];
+
+    const isProductInCart = cartItems.some(
+      (item) => item.productId === product.id // Update key names based on structure
+    );
+
+    if (isProductInCart) {
+      setPopupMessage("Product is already in the cart!");
+      setTimeout(() => setPopupMessage(""), 3000); // Clear message after 3 seconds
+    } else {
+      const newItem = { ...product, quantity: 1, user: user.id };
+      delete newItem["id"];
+      dispatch(addToCartAsync(newItem));
+      setPopupMessage("Product added to the cart!");
+      setTimeout(() => setPopupMessage(""), 3000); // Clear message after 3 seconds
+    }
   };
 
   return (
@@ -319,15 +343,22 @@ export default function ProductDetail() {
                     </div>
                   </RadioGroup>
                 </div>
-                <Link to="/cart">
-                  <button
-                    onClick={handleCart}
-                    type="submit"
-                    className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    Add to Cart
-                  </button>
-                </Link>
+
+                {/* Add to Cart Button */}
+                <button
+                  onClick={handleCart}
+                  type="submit"
+                  className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Add to Cart
+                </button>
+
+                {/* Popup Notification */}
+                {popupMessage && (
+                  <div className="mt-4 p-4 text-center text-white bg-indigo-500 rounded-md">
+                    {popupMessage}
+                  </div>
+                )}
               </form>
             </div>
 
