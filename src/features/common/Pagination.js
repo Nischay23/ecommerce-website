@@ -3,22 +3,28 @@ import { ITEMS_PER_PAGE } from "../../app/constants";
 
 export default function Pagination({ page, setPage, handlePage, totalItems }) {
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
   return (
-    <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+    <div className="flex items-center justify-between px-4 py-3 sm:px-6">
+      {/* Mobile View */}
       <div className="flex flex-1 justify-between sm:hidden">
         <div
-          onClick={(e) => handlePage(page > 1 ? page - 1 : page)}
-          className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          onClick={() => handlePage(page > 1 ? page - 1 : page)}
+          className="inline-flex items-center text-indigo-600 font-medium hover:underline hover:scale-110 cursor-pointer transition-all duration-300 ease-out"
         >
+          <ChevronLeftIcon className="h-5 w-5 mr-1" aria-hidden="true" />
           Previous
         </div>
         <div
-          onClick={(e) => handlePage(page < totalPages ? page + 1 : page)}
-          className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          onClick={() => handlePage(page < totalPages ? page + 1 : page)}
+          className="inline-flex items-center text-indigo-600 font-medium hover:underline hover:scale-110 cursor-pointer transition-all duration-300 ease-out"
         >
           Next
+          <ChevronRightIcon className="h-5 w-5 ml-1" aria-hidden="true" />
         </div>
       </div>
+
+      {/* Desktop View */}
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div>
           <p className="text-sm text-gray-700">
@@ -37,38 +43,42 @@ export default function Pagination({ page, setPage, handlePage, totalItems }) {
         </div>
         <div>
           <nav
-            className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+            className="inline-flex items-center space-x-3"
             aria-label="Pagination"
           >
+            {/* Previous Button */}
             <div
-              onClick={(e) => handlePage(page > 1 ? page - 1 : page)}
-              className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+              onClick={() => handlePage(page > 1 ? page - 1 : page)}
+              className={`flex items-center text-gray-500 hover:text-indigo-600 hover:scale-110 hover:shadow-lg cursor-pointer transition-all duration-300 ease-out ${
+                page === 1 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              <span className="sr-only">Previous</span>
-              <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+              <ChevronLeftIcon className="h-6 w-6" />
             </div>
-            {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
 
-            {Array.from({ length: totalPages }).map((el, index) => (
+            {/* Page Numbers */}
+            {Array.from({ length: totalPages }).map((_, index) => (
               <div
-                onClick={(e) => handlePage(index + 1)}
-                aria-current="page"
-                className={`relative cursor-pointer z-10 inline-flex items-center ${
+                key={index}
+                onClick={() => handlePage(index + 1)}
+                className={`flex items-center justify-center w-10 h-10 rounded-full cursor-pointer text-sm font-medium transition-all duration-300 ease-out ${
                   index + 1 === page
-                    ? "bg-indigo-600 text-white"
-                    : "text-gray-400"
-                } px-4 py-2 text-sm font-semibold  focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+                    ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg transform scale-110"
+                    : "text-gray-600 hover:bg-gradient-to-r hover:from-blue-100 hover:to-blue-200 hover:text-indigo-600"
+                } hover:shadow-md`}
               >
                 {index + 1}
               </div>
             ))}
 
+            {/* Next Button */}
             <div
-              onClick={(e) => handlePage(page < totalPages ? page + 1 : page)}
-              className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+              onClick={() => handlePage(page < totalPages ? page + 1 : page)}
+              className={`flex items-center text-gray-500 hover:text-indigo-600 hover:scale-110 hover:shadow-lg cursor-pointer transition-all duration-300 ease-out ${
+                page === totalPages ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              <span className="sr-only">Next</span>
-              <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+              <ChevronRightIcon className="h-6 w-6" />
             </div>
           </nav>
         </div>
