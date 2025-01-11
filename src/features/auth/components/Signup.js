@@ -14,8 +14,6 @@ export default function Signup() {
     formState: { errors },
   } = useForm();
 
-  console.log(errors);
-
   const [darkMode, setDarkMode] = useState(true);
 
   const toggleDarkMode = () => {

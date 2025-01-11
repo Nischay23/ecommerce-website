@@ -450,6 +450,7 @@ function Pagination({ page, setPage, handlePage, totalItems }) {
 
             {Array.from({ length: totalPages }).map((el, index) => (
               <div
+                key={index}
                 onClick={(e) => handlePage(index + 1)}
                 aria-current="page"
                 className={`relative cursor-pointer z-10 inline-flex items-center ${
@@ -485,7 +486,6 @@ function ProductGrid({ products }) {
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
           {productArray.map((product) => (
             <div key={product.id}>
-              {/* Product Card */}
               <Link to={`/product-detail/${product.id}`}>
                 <div className="group relative border-2 border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-lg hover:border-gray-400 transition duration-300 ease-in-out bg-white">
                   {/* Product Image */}

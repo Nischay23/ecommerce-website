@@ -399,7 +399,7 @@ function DesktopFilter({ handleFilter, filters }) {
 }
 
 function ProductGrid({ products, status }) {
-  const productArray = Array.isArray(products?.data) ? products.data : [];
+  const productArray = Array.isArray(products) ? products : [];
 
   if (!productArray.length) {
     return <p>No products available.</p>;

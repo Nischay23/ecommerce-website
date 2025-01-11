@@ -62,23 +62,36 @@ export default function ProductDetail() {
   const handleCart = (e) => {
     e.preventDefault();
 
-    // Check if cart is valid and an array
+    // Ensure cart has a valid structure
     const cartItems = Array.isArray(cart) ? cart : cart?.items || [];
 
+    // Check if the product is already in the cart
     const isProductInCart = cartItems.some(
-      (item) => item.productId === product.id // Update key names based on structure
+      (item) => item.product === product.id // Ensure "product" matches the backend schema
     );
 
     if (isProductInCart) {
       setPopupMessage("Product is already in the cart!");
-      setTimeout(() => setPopupMessage(""), 3000); // Clear message after 3 seconds
+      clearPopupMessageAfterDelay();
     } else {
-      const newItem = { ...product, quantity: 1, user: user.id };
-      delete newItem["id"];
+      // Create a new cart item
+      const newItem = {
+        product: product.id, // Send product ID to backend
+        quantity: 1,
+        user: user.id, // Include user ID
+      };
+
+      // Dispatch action to add the product to the cart
       dispatch(addToCartAsync(newItem));
+
       setPopupMessage("Product added to the cart!");
-      setTimeout(() => setPopupMessage(""), 3000); // Clear message after 3 seconds
+      clearPopupMessageAfterDelay();
     }
+  };
+
+  // Helper function to clear popup message
+  const clearPopupMessageAfterDelay = () => {
+    setTimeout(() => setPopupMessage(""), 3000); // Clear after 3 seconds
   };
 
   return (
