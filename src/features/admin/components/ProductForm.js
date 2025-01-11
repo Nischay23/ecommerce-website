@@ -99,7 +99,7 @@ function ProductForm() {
             </h2>
 
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              {selectedProduct.deleted && (
+              {selectedProduct && selectedProduct.deleted && (
                 <h2 className="text-red-500 sm:col-span-6">
                   This product is deleted
                 </h2>
@@ -458,15 +458,17 @@ function ProductForm() {
           </button>
         </div>
       </form>
-      <Modal
-        title={`Delete ${selectedProduct.title}`}
-        message="Are you sure you want to delete this Product ?"
-        dangerOption="Delete"
-        cancelOption="Cancel"
-        dangerAction={handleDelete}
-        cancelAction={() => setOpenModal(null)}
-        showModal={openModal}
-      ></Modal>
+      {selectedProduct && (
+        <Modal
+          title={`Delete ${selectedProduct.title}`}
+          message="Are you sure you want to delete this Product ?"
+          dangerOption="Delete"
+          cancelOption="Cancel"
+          dangerAction={handleDelete}
+          cancelAction={() => setOpenModal(null)}
+          showModal={openModal}
+        ></Modal>
+      )}
     </>
   );
 }

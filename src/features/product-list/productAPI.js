@@ -1,12 +1,3 @@
-export function fetchAllProducts() {
-  return new Promise(async (resolve) => {
-    //TODO: we will not hard-code server URL here
-    const response = await fetch("http://localhost:8080/products");
-    const data = await response.json();
-    resolve({ data });
-  });
-}
-
 export function fetchCategories() {
   return new Promise(async (resolve) => {
     const response = await fetch("http://localhost:8080/categories");
@@ -58,7 +49,7 @@ export function updateProduct(update) {
   });
 }
 
-export function fetchProductsByFilters(filter, sort, pagination) {
+export function fetchProductsByFilters(filter, sort, pagination, admin) {
   // filter = {"category":"smartphone"}
   // TODO : on server we will support multi values
   let queryString = "";
@@ -75,6 +66,9 @@ export function fetchProductsByFilters(filter, sort, pagination) {
 
   for (let key in pagination) {
     queryString += `${key}=${pagination[key]}&`;
+  }
+  if (admin) {
+    queryString += `admin=true`;
   }
 
   return new Promise(async (resolve) => {
