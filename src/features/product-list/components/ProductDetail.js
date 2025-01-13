@@ -52,7 +52,7 @@ export default function ProductDetail() {
   const product = useSelector(selectProductById);
   const dispatch = useDispatch();
   const params = useParams();
-  const user = useSelector(selectLoggedInUser);
+
   const cart = useSelector((state) => state.cart);
 
   const [popupMessage, setPopupMessage] = useState(""); // State for popup message
@@ -88,7 +88,6 @@ export default function ProductDetail() {
       const newItem = {
         product: product.id, // Send product ID to backend
         quantity: 1,
-        user: user.id, // Include user ID
       };
 
       // Dispatch action to add the product to the cart
