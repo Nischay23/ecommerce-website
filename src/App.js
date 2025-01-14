@@ -1,38 +1,40 @@
 import "./App.css";
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
-import SignUpPage from "./pages/SignUpPage";
-import PageNotFound from "./pages/404";
-import OrderSuccessPage from "./pages/orderSuccessPage";
-import UserOrders from "./features/user/components/UserOrders";
-import UserOrdersPage from "./pages/userOrderPage";
-import UserProfile from "./features/user/components/UserProfile";
-import UserProfilePage from "./pages/UserProfilePage";
-import { fetchLoggedInUserAsync } from "./features/user/userSlice";
-import Logout from "./features/auth/components/Logout";
-import ForgotPasswordPage from "./pages/FogotPasswordPage";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Route,
-  Link,
-} from "react-router-dom";
+import SignupPage from "./pages/SignupPage";
 
+import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
 import CartPage from "./pages/CartPage";
 import Checkout from "./pages/Checkout";
 import ProductDetailPage from "./pages/ProductDetailPage";
-
 import Protected from "./features/auth/components/Protected";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectLoggedInUser } from "./features/auth/authSlice";
+import {
+  checkAuthAsync,
+  selectLoggedInUser,
+  selectUserChecked,
+} from "./features/auth/authSlice";
 import { fetchItemsByUserIdAsync } from "./features/cart/cartSlice";
-
+import PageNotFound from "./pages/404";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
+import UserOrdersPage from "./pages/UserOrdersPage";
+import UserProfilePage from "./pages/UserProfilePage";
+import { fetchLoggedInUserAsync } from "./features/user/userSlice";
+import Logout from "./features/auth/components/Logout";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ProtectedAdmin from "./features/auth/components/ProtectedAdmin";
 import AdminHome from "./pages/AdminHome";
-import AdminProductDetailPage from "./features/admin/components/AdminProductDetail";
+import AdminProductDetailPage from "./pages/AdminProductDetailPage";
 import AdminProductFormPage from "./pages/AdminProductFormPage";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
+import { positions, Provider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
+
+const options = {
+  timeout: 5000,
+  position: positions.BOTTOM_LEFT,
+};
 
 const router = createBrowserRouter([
   {
@@ -44,20 +46,20 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/Login",
-    element: <LoginPage></LoginPage>,
-  },
-  {
-    path: "/SignUp",
-    element: <SignUpPage></SignUpPage>,
-  },
-  {
     path: "/admin",
     element: (
       <ProtectedAdmin>
         <AdminHome></AdminHome>
       </ProtectedAdmin>
     ),
+  },
+  {
+    path: "/login",
+    element: <LoginPage></LoginPage>,
+  },
+  {
+    path: "/signup",
+    element: <SignupPage></SignupPage>,
   },
   {
     path: "/cart",
@@ -67,9 +69,8 @@ const router = createBrowserRouter([
       </Protected>
     ),
   },
-
   {
-    path: "/Checkout",
+    path: "/checkout",
     element: (
       <Protected>
         <Checkout></Checkout>
@@ -101,18 +102,18 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/admin/product-form/edit/:id",
-    element: (
-      <ProtectedAdmin>
-        <AdminProductFormPage></AdminProductFormPage>
-      </ProtectedAdmin>
-    ),
-  },
-  {
     path: "/admin/orders",
     element: (
       <ProtectedAdmin>
         <AdminOrdersPage></AdminOrdersPage>
+      </ProtectedAdmin>
+    ),
+  },
+  {
+    path: "/admin/product-form/edit/:id",
+    element: (
+      <ProtectedAdmin>
+        <AdminProductFormPage></AdminProductFormPage>
       </ProtectedAdmin>
     ),
   },
@@ -157,6 +158,12 @@ const router = createBrowserRouter([
 function App() {
   const dispatch = useDispatch();
   const user = useSelector(selectLoggedInUser);
+  const userChecked = useSelector(selectUserChecked);
+
+  useEffect(() => {
+    dispatch(checkAuthAsync());
+  }, [dispatch]);
+
   useEffect(() => {
     if (user) {
       dispatch(fetchItemsByUserIdAsync());
@@ -164,10 +171,18 @@ function App() {
       dispatch(fetchLoggedInUserAsync());
     }
   }, [dispatch, user]);
+
   return (
-    <div className="App">
-      <RouterProvider router={router} />
-    </div>
+    <>
+      <div className="App">
+        {userChecked && (
+          <Provider template={AlertTemplate} {...options}>
+            <RouterProvider router={router} />
+          </Provider>
+        )}
+        {/* Link must be inside the Provider */}
+      </div>
+    </>
   );
 }
 
