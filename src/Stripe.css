@@ -1,0 +1,240 @@
+/* General Layout and Centering */
+.Stripe {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.Stripe form,
+#payment-status {
+  width: 90vw;
+  max-width: 500px;
+  min-width: 300px;
+  padding: 30px;
+  margin: 20px auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
+.Stripe form {
+  display: flex;
+  flex-direction: column;
+}
+
+#payment-status {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  animation: fadeInAnimation 1s ease forwards;
+}
+
+/* Payment Message Styling */
+#payment-message {
+  color: #6f7b8a;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Payment Element */
+#payment-element {
+  margin-bottom: 24px;
+}
+
+/* Buttons Styling */
+.Stripe button {
+  background-color: #0055de;
+  font-family: Arial, sans-serif;
+  color: white;
+  border-radius: 4px;
+  border: none;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: block;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.Stripe button:hover {
+  background-color: #0045a0;
+  filter: brightness(1.1);
+}
+
+.Stripe button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Spinner/Processing State */
+.spinner,
+.spinner:before,
+.spinner:after {
+  border-radius: 50%;
+}
+
+.spinner {
+  color: #ffffff;
+  font-size: 22px;
+  text-indent: -9999px;
+  margin: 0 auto;
+  position: relative;
+  width: 22px;
+  height: 22px;
+  box-shadow: inset 0 0 0 2px;
+  transform: translateZ(0);
+}
+
+.spinner:before,
+.spinner:after {
+  position: absolute;
+  content: "";
+}
+
+.spinner:before {
+  width: 10px;
+  height: 20px;
+  background: #0055de;
+  border-radius: 20px 0 0 20px;
+  top: -0.2px;
+  left: -0.2px;
+  transform-origin: 10px 10px;
+  animation: loading 2s infinite ease 1.5s;
+}
+
+.spinner:after {
+  width: 10px;
+  height: 10px;
+  background: #0055de;
+  border-radius: 0 10px 10px 0;
+  top: -0.1px;
+  left: 10px;
+  transform-origin: 0 10px;
+  animation: loading 2s infinite ease;
+}
+
+/* Payment Status Page */
+#status-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background-color: #0055de;
+}
+
+h2 {
+  margin: 20px 0;
+  color: #30313d;
+  text-align: center;
+  font-size: 22px;
+}
+
+a {
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0055de;
+  display: block;
+  text-align: center;
+}
+
+a:hover {
+  filter: contrast(120%);
+}
+
+#details-table {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  font-size: 14px;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+}
+
+table tbody tr:first-child td {
+  border-top: 2px solid #e6e6e6;
+}
+
+table tbody tr:last-child td {
+  border-bottom: 2px solid #e6e6e6;
+}
+
+td {
+  padding: 10px;
+  text-align: left;
+}
+
+.TableContent {
+  color: #6d6e78;
+}
+
+.TableLabel {
+  font-weight: 600;
+  color: #30313d;
+}
+
+#view-details {
+  color: #0055de;
+  text-align: center;
+}
+
+#retry-button {
+  background-color: #0055de;
+  color: white;
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  transition: all 0.2s ease;
+  box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.1);
+}
+
+#retry-button:hover {
+  background-color: #0045a0;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInAnimation {
+  to {
+    opacity: 1;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .Stripe form,
+  #payment-status {
+    width: 85vw;
+    min-width: 300px;
+  }
+  h2 {
+    font-size: 20px;
+  }
+  .TableLabel {
+    font-size: 14px;
+  }
+}
