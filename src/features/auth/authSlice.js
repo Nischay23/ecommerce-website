@@ -43,9 +43,16 @@ export const loginUserAsync = createAsyncThunk(
 export const checkAuthAsync = createAsyncThunk("user/checkAuth", async () => {
   try {
     const response = await checkAuth();
-    return response.data;
+
+    if (response.headers["content-type"]?.includes("application/json")) {
+      return response.data;
+    } else {
+      console.error("Invalid response type:", response);
+      throw new Error("Expected JSON but got non-JSON response");
+    }
   } catch (error) {
-    console.log(error);
+    console.error("API Call Failed:", error.response?.data || error.message);
+    throw error; // Ensure the error propagates if needed
   }
 });
 
