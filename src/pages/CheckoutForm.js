@@ -27,15 +27,18 @@ export default function CheckoutForm() {
     }
 
     setIsLoading(true);
+    console.log("Current Order:", currentOrder);
 
     const { error } = await stripe.confirmPayment({
       elements,
+
       confirmParams: {
         // Make sure to change this to your payment completion page
         return_url: `https://mern-ecommerce-tan-chi.vercel.app/order-success/${currentOrder.id}`,
         receipt_email: email,
       },
     });
+    console.log("Stripe confirmPayment result:", error);
 
     // This point will only be reached if there is an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
