@@ -4,7 +4,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import CheckoutForm from "./CheckoutForm";
-import CompletePage from "./CompletePage";
+
 import "../Stripe.css";
 import { useSelector } from "react-redux";
 import { selectCurrentOrder } from "../features/order/orderSlice";
@@ -48,7 +48,6 @@ export default function App() {
           stripe={stripePromise}
         >
           <CheckoutForm />
-          <CompletePage />
         </Elements>
       )}
     </div>
