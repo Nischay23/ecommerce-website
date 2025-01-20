@@ -3,11 +3,20 @@ import { loginUser, createUser, signOut, checkAuth } from "./authAPI";
 import { updateUser } from "../user/userAPI";
 
 const initialState = {
-  loggedInUserToken: null, // this should only contain user identity => 'id'/'role'
+  loggedInUserToken: null,
   status: "idle",
   error: null,
   userChecked: false,
 };
+
+export const signOutAsync = createAsyncThunk(
+  "user/signOut",
+  async (loginInfo) => {
+    const response = await signOut(loginInfo);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
 
 export const createUserAsync = createAsyncThunk(
   "user/createUser",
@@ -34,22 +43,20 @@ export const loginUserAsync = createAsyncThunk(
 export const checkAuthAsync = createAsyncThunk("user/checkAuth", async () => {
   try {
     const response = await checkAuth();
-    return response.data;
+
+    if (response.headers["content-type"]?.includes("application/json")) {
+      return response.data;
+    } else {
+      console.error("Invalid response type:", response);
+      throw new Error("Expected JSON but got non-JSON response");
+    }
   } catch (error) {
-    console.log(error);
+    console.error("API Call Failed:", error.response?.data || error.message);
+    throw error; // Ensure the error propagates if needed
   }
 });
 
-export const signOutAsync = createAsyncThunk(
-  "user/signOut",
-  async (loginInfo) => {
-    const response = await signOut(loginInfo);
-    // The value we return becomes the `fulfilled` action payload
-    return response.data;
-  }
-);
-
-export const authSlice = createSlice({
+export const counterSlice = createSlice({
   name: "user",
   initialState,
   reducers: {},
@@ -73,6 +80,7 @@ export const authSlice = createSlice({
         state.status = "idle";
         state.error = action.payload;
       })
+
       .addCase(signOutAsync.pending, (state) => {
         state.status = "loading";
       })
@@ -99,6 +107,6 @@ export const selectLoggedInUser = (state) => state.auth.loggedInUserToken;
 export const selectError = (state) => state.auth.error;
 export const selectUserChecked = (state) => state.auth.userChecked;
 
-// export const { } = authSlice.actions;
+export const { increment } = counterSlice.actions;
 
-export default authSlice.reducer;
+export default counterSlice.reducer;
