@@ -11,18 +11,11 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { addToCartAsync, selectItems } from "../../cart/cartSlice";
 import { selectLoggedInUser } from "../../auth/authSlice";
-import { discountedPrice } from "../../../app/constants";
+
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // TODO: In server data we will add colors, sizes , highlights. to each product
-
-const highlights = [
-  "Hand cut and sewn locally",
-  "Dyed with our proprietary colors",
-  "Pre-washed & pre-shrunk",
-  "Ultra-soft 100% cotton",
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -81,7 +74,7 @@ export default function ProductDetail() {
       }
 
       // Dispatch action to add the product to the cart
-      dispatch(addToCartAsync(newItem));
+      dispatch(addToCartAsync({ item: newItem }));
 
       // Show success toast message when product is added to the cart
       toast.success("Product added to the cart!", {
@@ -216,7 +209,10 @@ export default function ProductDetail() {
                   ${product.price}
                 </p>
                 <p className="text-3xl tracking-tight text-gray-900">
-                  ${discountedPrice(product)}
+                  $
+                  {Math.round(
+                    product.price * (1 - product.discountPercentage / 100)
+                  )}
                 </p>
 
                 {/* Reviews */}

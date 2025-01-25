@@ -24,12 +24,22 @@ import {
   PlusIcon,
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
-import { ITEMS_PER_PAGE, discountedPrice } from "../../../app/constants";
+import { ITEMS_PER_PAGE } from "../../../app/constants";
 
 const sortOptions = [
   { name: "Best Rating", sort: "rating", order: "desc", current: false },
-  { name: "Price: Low to High", sort: "price", order: "asc", current: false },
-  { name: "Price: High to Low", sort: "price", order: "desc", current: false },
+  {
+    name: "Price: Low to High",
+    sort: "discountPrice",
+    order: "asc",
+    current: false,
+  },
+  {
+    name: "Price: High to Low",
+    sort: "discountPrice",
+    order: "desc",
+    current: false,
+  },
 ];
 
 function classNames(...classes) {
@@ -62,7 +72,6 @@ export default function AdminProductList() {
   const handleFilter = (e, section, option) => {
     console.log(e.target.checked);
     const newFilter = { ...filter };
-    // TODO : on server it will support multiple categories
     if (e.target.checked) {
       if (newFilter[section.id]) {
         newFilter[section.id].push(option.value);
@@ -480,47 +489,50 @@ function Pagination({ page, setPage, handlePage, totalItems }) {
 }
 
 function ProductGrid({ products }) {
-  const productArray = Array.isArray(products) ? products : [];
-
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-          {productArray.map((product) => (
+          {products.map((product) => (
             <div key={product.id}>
               <Link to={`/product-detail/${product.id}`}>
-                <div className="group relative border-2 border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-lg hover:border-gray-400 transition duration-300 ease-in-out bg-white">
-                  {/* Product Image */}
-                  <div className="min-h-60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-90 lg:h-60">
+                <div className="group relative border-solid border-2 p-2 border-gray-200">
+                  <div className="min-h-60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
                     <img
                       src={product.thumbnail}
                       alt={product.title}
-                      className="h-full w-full object-cover object-center lg:h-full lg:w-full transform transition-transform duration-300 group-hover:scale-105"
+                      className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                     />
                   </div>
-                  {/* Product Details */}
                   <div className="mt-4 flex justify-between">
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-900 truncate">
-                        {product.title}
+                      <h3 className="text-sm text-gray-700">
+                        <div href={product.thumbnail}>
+                          <span
+                            aria-hidden="true"
+                            className="absolute inset-0"
+                          />
+                          {product.title}
+                        </div>
                       </h3>
-                      <p className="mt-1 text-sm text-gray-500 flex items-center">
-                        <StarIcon className="w-5 h-5 text-yellow-500" />
-                        <span className="ml-1">{product.rating}</span>
+                      <p className="mt-1 text-sm text-gray-500">
+                        <StarIcon className="w-6 h-6 inline"></StarIcon>
+                        <span className=" align-bottom">{product.rating}</span>
                       </p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-gray-900">
-                        ${discountedPrice(product)}
+                    <div>
+                      <p className="text-sm block font-medium text-gray-900">
+                        ${product.discountPrice}
                       </p>
-                      <p className="text-sm line-through font-medium text-gray-400">
+                      <p className="text-sm block line-through font-medium text-gray-400">
                         ${product.price}
                       </p>
                     </div>
                   </div>
-                  {/* Deleted Status */}
                   {product.deleted && (
-                    <p className="mt-2 text-sm text-red-400">Product deleted</p>
+                    <div>
+                      <p className="text-sm text-red-400">product deleted</p>
+                    </div>
                   )}
                   {product.stock <= 0 && (
                     <div>
@@ -529,8 +541,7 @@ function ProductGrid({ products }) {
                   )}
                 </div>
               </Link>
-              {/* Admin Edit Button */}
-              <div className="mt-5 text-center">
+              <div className="mt-5">
                 <Link
                   to={`/admin/product-form/edit/${product.id}`}
                   className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

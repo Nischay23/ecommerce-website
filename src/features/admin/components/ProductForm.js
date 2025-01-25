@@ -124,12 +124,16 @@ function ProductForm() {
             product.highlight4,
           ];
           product.rating = 0;
-          product.colors = product.colors.map((color) =>
-            colors.find((clr) => clr.id === color)
-          );
-          product.sizes = product.sizes.map((size) =>
-            sizes.find((sz) => sz.id === size)
-          );
+          if (product.colors) {
+            product.colors = product.colors.map((color) =>
+              colors.find((clr) => clr.id === color)
+            );
+          }
+          if (product.sizes) {
+            product.sizes = product.sizes.map((size) =>
+              sizes.find((sz) => sz.id === size)
+            );
+          }
 
           delete product["image1"];
           delete product["image2"];
@@ -148,7 +152,6 @@ function ProductForm() {
           } else {
             dispatch(createProductAsync(product));
             alert.success("Product Created");
-            // TODO: these alerts should check if API failed
             reset();
           }
         })}
