@@ -18,14 +18,11 @@ const initialState = {
   passwordReset: false,
 };
 
-export const signOutAsync = createAsyncThunk(
-  "user/signOut",
-  async (loginInfo) => {
-    const response = await signOut(loginInfo);
-    // The value we return becomes the `fulfilled` action payload
-    return response.data;
-  }
-);
+export const signOutAsync = createAsyncThunk("user/signOut", async () => {
+  const response = await signOut();
+  // The value we return becomes the `fulfilled` action payload
+  return response.data;
+});
 
 export const createUserAsync = createAsyncThunk(
   "user/createUser",
@@ -52,16 +49,9 @@ export const loginUserAsync = createAsyncThunk(
 export const checkAuthAsync = createAsyncThunk("user/checkAuth", async () => {
   try {
     const response = await checkAuth();
-
-    if (response.headers["content-type"]?.includes("application/json")) {
-      return response.data;
-    } else {
-      console.error("Invalid response type:", response);
-      throw new Error("Expected JSON but got non-JSON response");
-    }
+    return response.data;
   } catch (error) {
-    console.error("API Call Failed:", error.response?.data || error.message);
-    throw error; // Ensure the error propagates if needed
+    console.log(error);
   }
 });
 

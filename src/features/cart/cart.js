@@ -2,10 +2,10 @@ import { Fragment, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   deleteItemFromCartAsync,
+  selectCartLoaded,
   selectCartStatus,
   selectItems,
   updateCartAsync,
-  selectCartLoaded,
 } from "./cartSlice";
 import { Link } from "react-router-dom";
 import { Navigate } from "react-router-dom";
